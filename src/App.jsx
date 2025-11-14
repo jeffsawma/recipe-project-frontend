@@ -20,7 +20,7 @@ function App() {
 
         {/* Protected Routes */}
         <Route
-          path="/recettes"
+          path="/"
           element={
             <PrivateRoute>
               <RecipeList />
@@ -57,5 +57,3 @@ function App() {
 }
 
 export default App;
-
-// End of App.jsx
