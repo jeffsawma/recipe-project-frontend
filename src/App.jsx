@@ -20,7 +20,7 @@ function App() {
 
         {/* Protected Routes */}
         <Route
-          path="/"
+          path="/recipes"
           element={
             <PrivateRoute>
               <RecipeList />
