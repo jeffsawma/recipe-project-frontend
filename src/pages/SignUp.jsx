@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import api from '../api';
+import { useNavigate } from 'react-router-dom';
 
 // Full-page wrapper to cover entire viewport
 const PageWrapper = styled.div`
@@ -53,6 +54,7 @@ const SignUp = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ username: '', password: '' });
+  const navigate = useNavigate(); // Added hook to redirect user
 
   const handleSubmit = async () => {
     let tempErrors = {};
@@ -64,9 +66,12 @@ const SignUp = () => {
 
     try {
       await api.post('/users/register', { username, password });
-      // Optionally redirect to login page
+      // Redirect to login page after successful registration
+      navigate('/login'); // This will send the user to login page
     } catch (error) {
       console.log(error);
+      // Optionally, show a general error message to the user
+      setErrors({ general: error.response?.data?.message || "Erreur lors de l'inscription" });
     }
   };
 
@@ -88,6 +93,7 @@ const SignUp = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         {errors.password && <ErrorText>{errors.password}</ErrorText>}
+        {errors.general && <ErrorText>{errors.general}</ErrorText>}
         <Button onClick={handleSubmit}>S'inscrire</Button>
       </Container>
     </PageWrapper>
