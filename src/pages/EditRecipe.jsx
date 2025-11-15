@@ -92,7 +92,7 @@ export default function EditRecipe() {
     try {
       await api.put(`/recipes/${id}`, recipe);
       toast.success("Recette mise à jour avec succès !");
-      navigate('/recettes');
+      navigate('/recipes');
     } catch (err) {
       console.error('Erreur lors de la mise à jour de la recette:', err);
       toast.error("Erreur lors de la mise à jour de la recette");

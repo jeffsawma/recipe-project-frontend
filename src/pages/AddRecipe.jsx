@@ -81,7 +81,7 @@ export default function AddRecipe() {
     try {
       await api.post('/recipes', { name, ingredients, instructions, category, imageUrl });
       toast.success("Recette ajoutée avec succès !");
-      navigate('/recettes');
+      navigate('/recipes');
     } catch (err) {
       console.error('Erreur lors de l\'ajout de la recette:', err);
       toast.error("Erreur lors de l'ajout de la recette");
