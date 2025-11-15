@@ -69,7 +69,7 @@ const Login = () => {
     const res = await login(username, password);
     if (res.success) {
       toast.success('Connecté avec succès !');
-      navigate('/recettes'); // Redirect to recettes page
+      navigate('/recipes'); // Redirect to recettes page
     } else {
       toast.error(res.message || 'Échec de la connexion');
     }
