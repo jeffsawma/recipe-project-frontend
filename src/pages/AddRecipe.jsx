@@ -53,7 +53,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-// Error text (optional if you want to show validation)
+// Error text
 const ErrorText = styled.p`
   color: red;
   font-size: 0.9rem;
