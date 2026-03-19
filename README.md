@@ -1,16 +1,102 @@
-# React + Vite
+# Recipe App Frontend 🍳
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This is the frontend of a full-stack recipe management app I built. It lets users sign up, log in, and manage their own recipes through a simple interface.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The app is built with React and connects to a backend API for authentication and data handling.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Live App
 
-## Expanding the ESLint configuration
+https://recipe-project-frontend-vbr6.onrender.com/login
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## What you can do
+
+* Create an account and log in
+* View all recipes
+* Add new recipes
+* Edit existing ones
+* Delete recipes
+* See recipe details
+
+Most of the app is protected, so you need to be logged in to use it.
+
+---
+
+## Tech stack
+
+* React
+* React Router
+* Axios
+* Context API (for auth)
+* Styled Components
+* Vite
+* Render (deployment)
+
+---
+
+## Routing
+
+Public pages:
+
+* `/login`
+* `/signup`
+
+Private pages:
+
+* `/recipes`
+* `/add`
+* `/edit/:id`
+* `/recipe/:id`
+
+Private routes are handled with a custom `PrivateRoute` component.
+
+---
+
+## Authentication
+
+* When a user logs in, a JWT token is saved in `localStorage`
+* That token is automatically attached to API requests using an Axios interceptor
+* If the user is not authenticated, they get redirected to `/login`
+
+---
+
+## API connection
+
+The frontend uses a centralized Axios instance (`api.js`).
+
+It reads the backend URL from an environment variable:
+
+```env
+VITE_API_URL=https://recipe-project-backend-mny2.onrender.com
+```
+
+---
+
+## Running locally
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## Notes
+
+* The app redirects unauthenticated users to the login page
+* Most actions (like recipes) require a valid token
+* The UI is styled using styled-components instead of plain CSS
+
+---
+
+## About this project
+
+I originally built this project a few months ago and came back to it to clean things up, fix deployment issues, and better understand how everything connects (frontend ↔ backend ↔ database).
+
+It’s part of my portfolio to show a full-stack app with authentication, protected routes, and real deployment.
