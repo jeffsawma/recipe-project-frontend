@@ -100,3 +100,17 @@ npm run dev
 I originally built this project a few months ago and came back to it to clean things up, fix deployment issues, and better understand how everything connects (frontend ↔ backend ↔ database).
 
 It’s part of my portfolio to show a full-stack app with authentication, protected routes, and real deployment.
+
+## Screenshots
+
+### Login
+![Login](./screenshots/login.png)
+
+### Recipes
+![Recipes](./screenshots/recipes.png)
+
+### Add Recipe
+![Add](./screenshots/add.png)
+
+### Edit Recipe
+![Edit](./screenshots/edit.png)
