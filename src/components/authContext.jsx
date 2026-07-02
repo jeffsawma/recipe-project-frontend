@@ -10,7 +10,8 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) setUser({ token });
+        const username = localStorage.getItem('username');
+        if (token) setUser({ token, username });
         setLoading(false); // Finished checking token
     }, []);
 
@@ -18,7 +19,8 @@ export const AuthProvider = ({ children }) => {
         try {
             const res = await api.post('/users/login', { username, password });
             localStorage.setItem('token', res.data.token);
-            setUser({ token: res.data.token });
+            localStorage.setItem('username', username);
+            setUser({ token: res.data.token, username });
             return { success: true };
         } catch (error) {
             return { success: false, message: error.response?.data?.message || error.message };
@@ -27,6 +29,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
         setUser(null);
     };
 

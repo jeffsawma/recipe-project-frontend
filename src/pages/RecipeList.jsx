@@ -1,6 +1,7 @@
 // RecipeList.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../components/authContext.jsx';
 import styled from 'styled-components';
 import api from '../api';
 import { toast } from 'react-toastify';
@@ -32,6 +33,30 @@ const Search = styled.input`
   padding: 0.5rem;
   margin-bottom: 1rem;
   box-sizing: border-box;
+`;
+
+// Including an Add recipe button for a better UI
+const AddButton = styled.button`
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+`;
+
+const LogoutButton = styled.button`
+  background: #333;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  margin-left: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 `;
 
 // Recipe card
@@ -84,6 +109,7 @@ export default function RecipeList() {
   const [recipes, setRecipes] = useState([]);
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -117,6 +143,17 @@ export default function RecipeList() {
     <PageWrapper>
       <Container>
         <h2>Liste des recettes</h2>
+        <AddButton onClick={() => navigate('/add')}>
+          Ajouter une recette
+        </AddButton>
+        <LogoutButton
+          onClick={() => {
+            logout();
+            navigate('/login');
+          }}
+        >
+          Se déconnecter
+        </LogoutButton>
         <Search
           placeholder="Rechercher des recettes..."
           value={search}
@@ -129,8 +166,12 @@ export default function RecipeList() {
             <CardInfo>
               <CardTitle>{res.name}</CardTitle>
               <CardCategory>{res.category}</CardCategory>
-              <BtnYellow onClick={() => navigate(`/edit/${res.id}`)}>Modifier</BtnYellow>
-              <BtnRed onClick={() => remove(res.id)}>Supprimer</BtnRed>
+              {res.User?.username === user?.username && (
+                <>
+                  <BtnYellow onClick={() => navigate(`/edit/${res.id}`)}>Modifier</BtnYellow>
+                  <BtnRed onClick={() => remove(res.id)}>Supprimer</BtnRed>
+                </>
+              )}
             </CardInfo>
           </Card>
         ))}
