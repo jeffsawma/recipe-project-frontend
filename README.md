@@ -1,75 +1,99 @@
-# Recipe App Frontend 🍳
+# Recipe Management Frontend 🍳
 
 ## Overview
 
-This is the frontend of a full-stack recipe management app I built. It lets users sign up, log in, and manage their own recipes through a simple interface.
+This is the frontend for a full-stack recipe management application I built as part of my web development program. It allows users to register, log in, and manage their own recipes through a simple and responsive interface.
 
-The app is built with React and connects to a backend API for authentication and data handling.
+The application is built with React and communicates with a REST API for authentication and recipe management.
 
 ---
 
-## Live App
+## Live Application
 
 https://recipe-project-frontend-vbr6.onrender.com/login
 
 ---
 
-## What you can do
+## Backend Repository
 
-* Create an account and log in
-* View all recipes
-* Add new recipes
-* Edit existing ones
-* Delete recipes
-* See recipe details
-
-Most of the app is protected, so you need to be logged in to use it.
+https://github.com/jeffsawma/recipe-project-backend
 
 ---
 
-## Tech stack
+## Features
 
-* React
-* React Router
-* Axios
-* Context API (for auth)
-* Styled Components
-* Vite
-* Render (deployment)
+- User registration and login
+- JWT-based authentication
+- Protected routes
+- Search recipes
+- Add new recipes
+- View recipe details
+- Edit recipes created by the logged-in user
+- Delete recipes created by the logged-in user
+- Logout functionality
+- Automatic redirection to the login page when not authenticated
 
 ---
 
-## Routing
+## Tech Stack
 
-Public pages:
+- React
+- React Router
+- Axios
+- Context API
+- Styled Components
+- Vite
+- Render
 
-* `/login`
-* `/signup`
+---
 
-Private pages:
+## Application Routes
 
-* `/recipes`
-* `/add`
-* `/edit/:id`
-* `/recipe/:id`
+### Public Routes
 
-Private routes are handled with a custom `PrivateRoute` component.
+| Route | Description |
+|-------|-------------|
+| `/login` | User login |
+| `/signup` | User registration |
+
+### Protected Routes
+
+| Route | Description |
+|-------|-------------|
+| `/recipes` | View all recipes |
+| `/add` | Add a new recipe |
+| `/edit/:id` | Edit one of your recipes |
+| `/recipe/:id` | View recipe details |
+
+Protected pages are handled through a custom `PrivateRoute` component.
 
 ---
 
 ## Authentication
 
-* When a user logs in, a JWT token is saved in `localStorage`
-* That token is automatically attached to API requests using an Axios interceptor
-* If the user is not authenticated, they get redirected to `/login`
+- A JWT token is stored in `localStorage` after a successful login.
+- Axios automatically includes the token in every protected request.
+- Users who are not authenticated are redirected to the login page.
+- Users can only edit or delete recipes they own.
 
 ---
 
-## API connection
+## Demo Account
 
-The frontend uses a centralized Axios instance (`api.js`).
+You can use the following account to test the deployed application:
 
-It reads the backend URL from an environment variable:
+```text
+Username: Tester
+Password: 0000
+```
+
+---
+
+## Backend API
+
+The frontend communicates with the backend using a centralized Axios instance (`api.js`).
+
+The backend URL is loaded through an environment variable:
 
 ```env
 VITE_API_URL=https://recipe-project-backend-mny2.onrender.com
@@ -77,7 +101,7 @@ VITE_API_URL=https://recipe-project-backend-mny2.onrender.com
 
 ---
 
-## Running locally
+## Running Locally
 
 ```bash
 cd frontend
@@ -89,28 +113,33 @@ npm run dev
 
 ## Notes
 
-* The app redirects unauthenticated users to the login page
-* Most actions (like recipes) require a valid token
-* The UI is styled using styled-components instead of plain CSS
+- Authentication state is managed using React Context.
+- Protected routes prevent unauthorized access.
+- Styled Components are used for the user interface.
+- The application communicates with a Node.js / Express backend connected to a MySQL database.
 
 ---
 
-## About this project
+## About this Project
 
-I originally built this project a few months ago and came back to it to clean things up, fix deployment issues, and better understand how everything connects (frontend ↔ backend ↔ database).
+I originally built this project during my web development program. A few months later, I revisited it to improve the codebase, fix deployment issues, refine the authentication flow, improve the user experience, and prepare it as a portfolio project.
 
-It’s part of my portfolio to show a full-stack app with authentication, protected routes, and real deployment.
+---
 
 ## Screenshots
 
 ### Login
+
 ![Login](./screenshots/login.png)
 
-### Recipes
+### Recipe List
+
 ![Recipes](./screenshots/recipes.png)
 
 ### Add Recipe
+
 ![Add](./screenshots/add.png)
 
 ### Edit Recipe
+
 ![Edit](./screenshots/edit.png)
