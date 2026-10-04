@@ -1,11 +1,10 @@
-// EditRecipe.jsx
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import api from '../api';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
 
-// Full-page wrapper
+import api from '../api';
+
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100vw;
@@ -15,7 +14,6 @@ const PageWrapper = styled.div`
   background-color: #f5f5f5;
 `;
 
-// Centered container
 const Container = styled.div`
   max-width: 400px;
   width: 90%;
@@ -23,11 +21,10 @@ const Container = styled.div`
   background-color: white;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   color: black;
 `;
 
-// Input fields
 const Input = styled.input`
   width: 100%;
   padding: 0.5rem;
@@ -35,7 +32,6 @@ const Input = styled.input`
   box-sizing: border-box;
 `;
 
-// Select dropdown
 const Select = styled.select`
   width: 100%;
   padding: 0.5rem;
@@ -43,7 +39,6 @@ const Select = styled.select`
   box-sizing: border-box;
 `;
 
-// Button
 const Button = styled.button`
   width: 100%;
   padding: 0.5rem;
@@ -53,7 +48,6 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-// Error text (optional)
 const ErrorText = styled.p`
   color: red;
   font-size: 0.9rem;
@@ -62,40 +56,44 @@ const ErrorText = styled.p`
 
 export default function EditRecipe() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [recipe, setRecipe] = useState(null);
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const res = await api.get(`/recipes/${id}`);
-        setRecipe(res.data);
-      } catch (err) {
-        console.error('Erreur lors du chargement de la recette:', err);
-        toast.error('Erreur lors du chargement de la recette');
+        const response = await api.get(`/recipes/${id}`);
+        setRecipe(response.data);
+      } catch (error) {
+        console.error('Error loading recipe:', error);
+        toast.error('Unable to load recipe');
       }
     };
+
     fetchRecipe();
   }, [id]);
 
   const update = async () => {
-    let tempErrors = {};
-    if (!recipe.name) tempErrors.name = "Nom de la recette requis";
-    if (!recipe.ingredients) tempErrors.ingredients = "Ingrédients requis";
-    if (!recipe.instructions) tempErrors.instructions = "Instructions requises";
-    if (!recipe.category) tempErrors.category = "Catégorie requise";
+    const validationErrors = {};
 
-    setErrors(tempErrors);
-    if (Object.keys(tempErrors).length > 0) return;
+    if (!recipe.name) validationErrors.name = 'Recipe name is required';
+    if (!recipe.ingredients) validationErrors.ingredients = 'Ingredients are required';
+    if (!recipe.instructions) validationErrors.instructions = 'Instructions are required';
+    if (!recipe.category) validationErrors.category = 'Category is required';
+
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) return;
 
     try {
       await api.put(`/recipes/${id}`, recipe);
-      toast.success("Recette mise à jour avec succès !");
+      toast.success('Recipe updated successfully!');
       navigate('/recipes');
-    } catch (err) {
-      console.error('Erreur lors de la mise à jour de la recette:', err);
-      toast.error("Erreur lors de la mise à jour de la recette");
+    } catch (error) {
+      console.error('Error updating recipe:', error);
+      toast.error('Unable to update recipe');
     }
   };
 
@@ -104,46 +102,57 @@ export default function EditRecipe() {
   return (
     <PageWrapper>
       <Container>
-        <h2>Modifier recette</h2>
+        <h2>Edit Recipe</h2>
+
         <Input
           value={recipe.name}
-          onChange={e => setRecipe({ ...recipe, name: e.target.value })}
-          placeholder="Nom recette"
+          onChange={(event) =>
+            setRecipe({ ...recipe, name: event.target.value })
+          }
+          placeholder="Recipe name"
         />
         {errors.name && <ErrorText>{errors.name}</ErrorText>}
 
         <Input
           value={recipe.ingredients}
-          onChange={e => setRecipe({ ...recipe, ingredients: e.target.value })}
-          placeholder="Ingrédients"
+          onChange={(event) =>
+            setRecipe({ ...recipe, ingredients: event.target.value })
+          }
+          placeholder="Ingredients"
         />
         {errors.ingredients && <ErrorText>{errors.ingredients}</ErrorText>}
 
         <Input
           value={recipe.instructions}
-          onChange={e => setRecipe({ ...recipe, instructions: e.target.value })}
+          onChange={(event) =>
+            setRecipe({ ...recipe, instructions: event.target.value })
+          }
           placeholder="Instructions"
         />
         {errors.instructions && <ErrorText>{errors.instructions}</ErrorText>}
 
         <Select
           value={recipe.category}
-          onChange={e => setRecipe({ ...recipe, category: e.target.value })}
+          onChange={(event) =>
+            setRecipe({ ...recipe, category: event.target.value })
+          }
         >
-          <option value="">Choisir Catégorie</option>
-          <option>Restauration rapide</option>
-          <option>Aliments sains</option>
-          <option>Repas combinés</option>
+          <option value="">Choose a category</option>
+          <option>Fast Food</option>
+          <option>Healthy Food</option>
+          <option>Combination Meals</option>
         </Select>
         {errors.category && <ErrorText>{errors.category}</ErrorText>}
 
         <Input
-          value={recipe.imageUrl}
-          onChange={e => setRecipe({ ...recipe, imageUrl: e.target.value })}
+          value={recipe.imageUrl || ''}
+          onChange={(event) =>
+            setRecipe({ ...recipe, imageUrl: event.target.value })
+          }
           placeholder="Image URL"
         />
 
-        <Button onClick={update}>Mettre à jour recette</Button>
+        <Button onClick={update}>Update Recipe</Button>
       </Container>
     </PageWrapper>
   );

@@ -1,11 +1,10 @@
-// Login.jsx
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../components/AuthContext.js';
+import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
-// Full-page wrapper to cover entire viewport
+import { AuthContext } from '../components/AuthContext.js';
+
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100vw;
@@ -15,7 +14,6 @@ const PageWrapper = styled.div`
   background-color: #f5f5f5;
 `;
 
-// Centered form container
 const Container = styled.div`
   max-width: 400px;
   width: 90%;
@@ -27,14 +25,13 @@ const Container = styled.div`
   color: black;
 `;
 
-// Input field
 const Input = styled.input`
   width: 100%;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
+  box-sizing: border-box;
 `;
 
-// Button
 const Button = styled.button`
   width: 100%;
   padding: 0.5rem;
@@ -44,58 +41,70 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-// Error text
 const ErrorText = styled.p`
   color: red;
   font-size: 0.9rem;
   margin-top: 0.5rem;
 `;
 
+const SignUpText = styled.p`
+  margin-top: 1rem;
+`;
+
 const Login = () => {
   const { login } = useContext(AuthContext);
-  const navigate = useNavigate(); // For redirecting after login
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({ username: '', password: '' });
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async () => {
-    let tempErrors = {};
-    if (!username) tempErrors.username = "Nom d'utilisateur requis";
-    if (!password) tempErrors.password = "Mot de passe requis";
+    const validationErrors = {};
 
-    setErrors(tempErrors);
-    if (Object.keys(tempErrors).length > 0) return;
+    if (!username) validationErrors.username = 'Username is required';
+    if (!password) validationErrors.password = 'Password is required';
 
-    const res = await login(username, password);
-    if (res.success) {
-      toast.success('Connecté avec succès !');
-      navigate('/recipes'); // Redirect to recettes page
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) return;
+
+    const result = await login(username, password);
+
+    if (result.success) {
+      toast.success('Logged in successfully!');
+      navigate('/recipes');
     } else {
-      toast.error(res.message || 'Échec de la connexion');
+      toast.error(result.message || 'Login failed');
     }
   };
 
   return (
     <PageWrapper>
       <Container>
-        <h2>Connexion</h2>
+        <h2>Login</h2>
+
         <Input
           type="text"
-          placeholder="Nom d'utilisateur"
+          placeholder="Username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(event) => setUsername(event.target.value)}
         />
         {errors.username && <ErrorText>{errors.username}</ErrorText>}
 
         <Input
           type="password"
-          placeholder="Mot de passe"
+          placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(event) => setPassword(event.target.value)}
         />
         {errors.password && <ErrorText>{errors.password}</ErrorText>}
 
-        <Button onClick={handleSubmit}>Se connecter</Button>
+        <Button onClick={handleSubmit}>Log In</Button>
+
+        <SignUpText>
+          Don't have an account? <Link to="/signup">Sign up</Link>
+        </SignUpText>
       </Container>
     </PageWrapper>
   );

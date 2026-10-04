@@ -2,129 +2,173 @@
 
 ## Overview
 
-This is the frontend for a full-stack recipe management application I built as part of my web development program. It allows users to register, log in, and manage their own recipes through a simple and responsive interface.
+A React frontend for a full-stack recipe management application built as part of my web development program and later revisited for portfolio use.
 
-The application is built with React and communicates with a REST API for authentication and recipe management.
+Users can create an account, authenticate with JWT, browse and search recipes, view recipe details, and manage recipes they own.
 
----
+The application communicates with a Node.js / Express REST API backed by MySQL.
 
 ## Live Application
 
-https://recipe-project-frontend-vbr6.onrender.com/login
-
----
+https://recipe-project-frontend-vbr6.onrender.com
 
 ## Backend Repository
 
 https://github.com/jeffsawma/recipe-project-backend
 
----
-
 ## Features
 
 - User registration and login
 - JWT-based authentication
-- Protected routes
-- Search recipes
-- Add new recipes
-- View recipe details
-- Edit recipes created by the logged-in user
-- Delete recipes created by the logged-in user
+- Protected application routes
+- Recipe search
+- Recipe detail view
+- Add recipes
+- Edit owned recipes
+- Delete owned recipes
+- Ownership-based controls
 - Logout functionality
-- Automatic redirection to the login page when not authenticated
-
----
+- Automatic redirection for unauthenticated users
+- Toast notifications for application feedback
 
 ## Tech Stack
 
 - React
 - React Router
 - Axios
-- Context API
+- React Context
 - Styled Components
+- React Toastify
 - Vite
 - Render
-
----
 
 ## Application Routes
 
 ### Public Routes
 
 | Route | Description |
-|-------|-------------|
+| --- | --- |
+| `/` | Redirects to login |
 | `/login` | User login |
 | `/signup` | User registration |
 
 ### Protected Routes
 
 | Route | Description |
-|-------|-------------|
-| `/recipes` | View all recipes |
-| `/add` | Add a new recipe |
-| `/edit/:id` | Edit one of your recipes |
+| --- | --- |
+| `/recipes` | Browse and search recipes |
 | `/recipe/:id` | View recipe details |
+| `/add` | Create a recipe |
+| `/edit/:id` | Edit an owned recipe |
 
-Protected pages are handled through a custom `PrivateRoute` component.
-
----
+Authentication-protected pages are handled through a custom `PrivateRoute` component.
 
 ## Authentication
 
-- A JWT token is stored in `localStorage` after a successful login.
-- Axios automatically includes the token in every protected request.
-- Users who are not authenticated are redirected to the login page.
-- Users can only edit or delete recipes they own.
+Authentication state is managed with React Context.
 
----
+After a successful login:
+
+- the JWT is stored in `localStorage`
+- the authenticated username is stored locally
+- Axios automatically includes the JWT in protected API requests
+- unauthenticated users are redirected to the login page
+
+Recipe ownership determines whether edit and delete controls are displayed.
 
 ## Demo Account
 
-You can use the following account to test the deployed application:
+The deployed application can be tested with:
 
 ```text
 Username: Tester
 Password: 0000
 ```
 
----
-
 ## Backend API
 
-The frontend communicates with the backend using a centralized Axios instance (`api.js`).
+API communication is centralized through an Axios instance in `src/api.js`.
 
-The backend URL is loaded through an environment variable:
+The API URL is configured through the `VITE_API_URL` environment variable.
+
+Example:
 
 ```env
-VITE_API_URL=https://recipe-project-backend-mny2.onrender.com
+VITE_API_URL=http://localhost:3000
 ```
 
----
+For the deployed application, this variable points to the hosted backend API.
 
 ## Running Locally
 
+### 1. Clone the repository
+
 ```bash
-cd frontend
+git clone https://github.com/jeffsawma/recipe-project-frontend.git
+cd recipe-project-frontend
+```
+
+### 2. Install dependencies
+
+```bash
 npm install
+```
+
+### 3. Configure the environment
+
+Create a `.env` file from `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+For a backend running locally:
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+### 4. Start the development server
+
+```bash
 npm run dev
 ```
 
----
+## Available Scripts
 
-## Notes
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run preview
+```
 
-- Authentication state is managed using React Context.
-- Protected routes prevent unauthorized access.
-- Styled Components are used for the user interface.
-- The application communicates with a Node.js / Express backend connected to a MySQL database.
+## Project Structure
 
----
+```text
+src/
+├── components/
+│   ├── AuthContext.js
+│   ├── AuthProvider.jsx
+│   └── PrivateRoute.jsx
+├── pages/
+│   ├── AddRecipe.jsx
+│   ├── EditRecipe.jsx
+│   ├── Login.jsx
+│   ├── RecipeDetail.jsx
+│   ├── RecipeList.jsx
+│   └── SignUp.jsx
+├── api.js
+├── App.jsx
+├── index.css
+└── main.jsx
+```
 
-## About this Project
+## Project History
 
-I originally built this project during my web development program. A few months later, I revisited it to improve the codebase, fix deployment issues, refine the authentication flow, improve the user experience, and prepare it as a portfolio project.
+This application was originally developed during my web development program.
 
----
+I later revisited the project to improve dependency security, environment configuration, authentication structure, routing, code organization, deployment reliability, and overall portfolio presentation.
 
 ## Screenshots
 
@@ -138,8 +182,8 @@ I originally built this project during my web development program. A few months 
 
 ### Add Recipe
 
-![Add](./screenshots/add.png)
+![Add Recipe](./screenshots/add.png)
 
 ### Edit Recipe
 
-![Edit](./screenshots/edit.png)
+![Edit Recipe](./screenshots/edit.png)

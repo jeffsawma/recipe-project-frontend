@@ -1,23 +1,21 @@
-// RecipeList.jsx
-import { useState, useEffect, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../components/AuthContext.js';
-import styled from 'styled-components';
-import api from '../api';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
 
-// Full-page wrapper
+import { AuthContext } from '../components/AuthContext.js';
+import api from '../api';
+
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100vw;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* align top, we can add spacing if needed */
+  align-items: flex-start;
   background-color: #f5f5f5;
   padding: 2rem 0;
 `;
 
-// Centered container for the list
 const Container = styled.div`
   max-width: 800px;
   width: 90%;
@@ -27,7 +25,6 @@ const Container = styled.div`
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 `;
 
-// Search input
 const Search = styled.input`
   width: 100%;
   padding: 0.5rem;
@@ -35,7 +32,6 @@ const Search = styled.input`
   box-sizing: border-box;
 `;
 
-// Including an Add recipe button for a better UI
 const AddButton = styled.button`
   background: #28a745;
   color: white;
@@ -59,7 +55,6 @@ const LogoutButton = styled.button`
   font-weight: bold;
 `;
 
-// Recipe card
 const Card = styled.div`
   display: flex;
   align-items: center;
@@ -88,8 +83,17 @@ const CardCategory = styled.p`
   margin: 0 0 0.5rem 0;
 `;
 
-const BtnYellow = styled.button`
-  background: yellow;
+const ViewButton = styled.button`
+  background: #0d6efd;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 6px;
+  cursor: pointer;
+`;
+
+const EditButton = styled.button`
+  background: #ffc107;
   color: black;
   border: none;
   padding: 5px 10px;
@@ -97,8 +101,8 @@ const BtnYellow = styled.button`
   cursor: pointer;
 `;
 
-const BtnRed = styled.button`
-  background: red;
+const DeleteButton = styled.button`
+  background: #dc3545;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -106,70 +110,88 @@ const BtnRed = styled.button`
 `;
 
 export default function RecipeList() {
-  const [recipes, setRecipes] = useState([]);
-  const [search, setSearch] = useState('');
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
+
+  const [recipes, setRecipes] = useState([]);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
         const response = await api.get('/recipes');
         setRecipes(response.data);
-      } catch (err) {
-        console.error(err);
-        toast.error('Erreur lors du chargement des recettes');
+      } catch (error) {
+        console.error('Error loading recipes:', error);
+        toast.error('Unable to load recipes');
       }
     };
+
     fetchRecipes();
   }, []);
 
-  const remove = async (id) => {
+  const removeRecipe = async (id) => {
     try {
       await api.delete(`/recipes/${id}`);
-      setRecipes(recipes.filter(res => res.id !== id));
-      toast.success('Recette supprimée avec succès !');
-    } catch (err) {
-      console.error(err);
-      toast.error('Erreur lors de la suppression de la recette');
+      setRecipes((currentRecipes) =>
+        currentRecipes.filter((recipe) => recipe.id !== id)
+      );
+      toast.success('Recipe deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+      toast.error('Unable to delete recipe');
     }
   };
 
-  const filtered = recipes.filter(res =>
-    res.name.toLowerCase().includes(search.toLowerCase())
+  const filteredRecipes = recipes.filter((recipe) =>
+    recipe.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <PageWrapper>
       <Container>
-        <h2>Liste des recettes</h2>
+        <h2>Recipes</h2>
+
         <AddButton onClick={() => navigate('/add')}>
-          Ajouter une recette
+          Add Recipe
         </AddButton>
-        <LogoutButton
-          onClick={() => {
-            logout();
-            navigate('/login');
-          }}
-        >
-          Se déconnecter
+
+        <LogoutButton onClick={handleLogout}>
+          Log Out
         </LogoutButton>
+
         <Search
-          placeholder="Rechercher des recettes..."
+          placeholder="Search recipes..."
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(event) => setSearch(event.target.value)}
         />
 
-        {filtered.map(res => (
-          <Card key={res.id}>
-            <Img src={res.imageUrl} />
+        {filteredRecipes.map((recipe) => (
+          <Card key={recipe.id}>
+            {recipe.imageUrl && <Img src={recipe.imageUrl} alt={recipe.name} />}
+
             <CardInfo>
-              <CardTitle>{res.name}</CardTitle>
-              <CardCategory>{res.category}</CardCategory>
-              {res.User?.username === user?.username && (
+              <CardTitle>{recipe.name}</CardTitle>
+              <CardCategory>{recipe.category}</CardCategory>
+
+              <ViewButton onClick={() => navigate(`/recipe/${recipe.id}`)}>
+                View Details
+              </ViewButton>
+
+              {recipe.User?.username === user?.username && (
                 <>
-                  <BtnYellow onClick={() => navigate(`/edit/${res.id}`)}>Modifier</BtnYellow>
-                  <BtnRed onClick={() => remove(res.id)}>Supprimer</BtnRed>
+                  <EditButton onClick={() => navigate(`/edit/${recipe.id}`)}>
+                    Edit
+                  </EditButton>
+
+                  <DeleteButton onClick={() => removeRecipe(recipe.id)}>
+                    Delete
+                  </DeleteButton>
                 </>
               )}
             </CardInfo>

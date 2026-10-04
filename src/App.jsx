@@ -1,5 +1,4 @@
-// App.jsx
-import { Routes, Route } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './components/AuthProvider.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
 
@@ -14,11 +13,11 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* Public Routes */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
 
-        {/* Protected Routes */}
         <Route
           path="/recipes"
           element={
@@ -27,6 +26,7 @@ function App() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/add"
           element={
@@ -35,6 +35,7 @@ function App() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/edit/:id"
           element={
@@ -43,6 +44,7 @@ function App() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/recipe/:id"
           element={
@@ -51,6 +53,8 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </AuthProvider>
   );

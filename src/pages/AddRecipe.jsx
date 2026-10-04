@@ -1,11 +1,10 @@
-// AddRecipe.jsx
 import { useState } from 'react';
-import styled from 'styled-components';
-import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
 
-// Full-page wrapper
+import api from '../api';
+
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100vw;
@@ -15,7 +14,6 @@ const PageWrapper = styled.div`
   background-color: #f5f5f5;
 `;
 
-// Centered form container
 const Container = styled.div`
   max-width: 400px;
   width: 90%;
@@ -23,11 +21,10 @@ const Container = styled.div`
   background-color: white;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   color: black;
 `;
 
-// Input fields
 const Input = styled.input`
   width: 100%;
   padding: 0.5rem;
@@ -35,7 +32,6 @@ const Input = styled.input`
   box-sizing: border-box;
 `;
 
-// Select dropdown
 const Select = styled.select`
   width: 100%;
   padding: 0.5rem;
@@ -43,7 +39,6 @@ const Select = styled.select`
   box-sizing: border-box;
 `;
 
-// Button
 const Button = styled.button`
   width: 100%;
   padding: 0.5rem;
@@ -53,7 +48,6 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-// Error text
 const ErrorText = styled.p`
   color: red;
   font-size: 0.9rem;
@@ -61,57 +55,88 @@ const ErrorText = styled.p`
 `;
 
 export default function AddRecipe() {
-  const [name, setName] = useState('');
-  const [ingredients, setIng] = useState('');
-  const [instructions, setIns] = useState('');
-  const [category, setCat] = useState('');
-  const [imageUrl, setImg] = useState('');
-  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  const [name, setName] = useState('');
+  const [ingredients, setIngredients] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [category, setCategory] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [errors, setErrors] = useState({});
+
   const save = async () => {
-    let tempErrors = {};
-    if (!name) tempErrors.name = "Nom de la recette requis";
-    if (!ingredients) tempErrors.ingredients = "Ingrédients requis";
-    if (!instructions) tempErrors.instructions = "Instructions requises";
-    if (!category) tempErrors.category = "Catégorie requise";
-    setErrors(tempErrors);
-    if (Object.keys(tempErrors).length > 0) return;
+    const validationErrors = {};
+
+    if (!name) validationErrors.name = 'Recipe name is required';
+    if (!ingredients) validationErrors.ingredients = 'Ingredients are required';
+    if (!instructions) validationErrors.instructions = 'Instructions are required';
+    if (!category) validationErrors.category = 'Category is required';
+
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) return;
 
     try {
-      await api.post('/recipes', { name, ingredients, instructions, category, imageUrl });
-      toast.success("Recette ajoutée avec succès !");
+      await api.post('/recipes', {
+        name,
+        ingredients,
+        instructions,
+        category,
+        imageUrl,
+      });
+
+      toast.success('Recipe added successfully!');
       navigate('/recipes');
-    } catch (err) {
-      console.error('Erreur lors de l\'ajout de la recette:', err);
-      toast.error("Erreur lors de l'ajout de la recette");
+    } catch (error) {
+      console.error('Error adding recipe:', error);
+      toast.error('Unable to add recipe');
     }
   };
 
   return (
     <PageWrapper>
       <Container>
-        <h2>Ajouter une recette</h2>
-        <Input placeholder="Nom recette" value={name} onChange={e => setName(e.target.value)} />
+        <h2>Add Recipe</h2>
+
+        <Input
+          placeholder="Recipe name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
         {errors.name && <ErrorText>{errors.name}</ErrorText>}
 
-        <Input placeholder="Ingrédients" value={ingredients} onChange={e => setIng(e.target.value)} />
+        <Input
+          placeholder="Ingredients"
+          value={ingredients}
+          onChange={(event) => setIngredients(event.target.value)}
+        />
         {errors.ingredients && <ErrorText>{errors.ingredients}</ErrorText>}
 
-        <Input placeholder="Instructions" value={instructions} onChange={e => setIns(e.target.value)} />
+        <Input
+          placeholder="Instructions"
+          value={instructions}
+          onChange={(event) => setInstructions(event.target.value)}
+        />
         {errors.instructions && <ErrorText>{errors.instructions}</ErrorText>}
 
-        <Select value={category} onChange={e => setCat(e.target.value)}>
-          <option value="">Choisir Catégorie</option>
-          <option>Restauration rapide</option>
-          <option>Aliments sains</option>
-          <option>Repas combinés</option>
+        <Select
+          value={category}
+          onChange={(event) => setCategory(event.target.value)}
+        >
+          <option value="">Choose a category</option>
+          <option>Fast Food</option>
+          <option>Healthy Food</option>
+          <option>Combination Meals</option>
         </Select>
         {errors.category && <ErrorText>{errors.category}</ErrorText>}
 
-        <Input placeholder="Image URL" value={imageUrl} onChange={e => setImg(e.target.value)} />
+        <Input
+          placeholder="Image URL"
+          value={imageUrl}
+          onChange={(event) => setImageUrl(event.target.value)}
+        />
 
-        <Button onClick={save}>Ajouter recette</Button>
+        <Button onClick={save}>Add Recipe</Button>
       </Container>
     </PageWrapper>
   );

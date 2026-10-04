@@ -1,23 +1,21 @@
-// SignUp.jsx
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import api from '../api';
-import { useNavigate } from 'react-router-dom';
 
-// Full-page wrapper to cover entire viewport
+import api from '../api';
+
 const PageWrapper = styled.div`
-  min-height: 100vh; /* full viewport height */
-  width: 100vw;      /* full viewport width */
+  min-height: 100vh;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5; /* light gray background for full page */
+  background-color: #f5f5f5;
 `;
 
-// Centered form container
 const Container = styled.div`
   max-width: 400px;
-  width: 90%; /* makes it slightly responsive on small screens */
+  width: 90%;
   padding: 2rem;
   background-color: white;
   border-radius: 8px;
@@ -26,14 +24,13 @@ const Container = styled.div`
   color: black;
 `;
 
-// Input field
 const Input = styled.input`
   width: 100%;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
+  box-sizing: border-box;
 `;
 
-// Button
 const Button = styled.button`
   width: 100%;
   padding: 0.5rem;
@@ -43,58 +40,73 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-// Error text
 const ErrorText = styled.p`
   color: red;
   font-size: 0.9rem;
   margin-top: 0.5rem;
 `;
 
+const LoginText = styled.p`
+  margin-top: 1rem;
+`;
+
 const SignUp = () => {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({ username: '', password: '' });
-  const navigate = useNavigate(); // Added hook to redirect user
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async () => {
-    let tempErrors = {};
-    if (!username) tempErrors.username = "Nom d'utilisateur requis";
-    if (!password) tempErrors.password = "Mot de passe requis";
+    const validationErrors = {};
 
-    setErrors(tempErrors);
-    if (Object.keys(tempErrors).length > 0) return;
+    if (!username) validationErrors.username = 'Username is required';
+    if (!password) validationErrors.password = 'Password is required';
+
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) return;
 
     try {
       await api.post('/users/register', { username, password });
-      // Redirect to login page after successful registration
-      navigate('/login'); // This will send the user to login page
+      navigate('/login');
     } catch (error) {
-      console.log(error);
-      // Optionally, show a general error message to the user
-      setErrors({ general: error.response?.data?.message || "Erreur lors de l'inscription" });
+      setErrors({
+        general:
+          error.response?.data?.message ||
+          'An error occurred while creating the account',
+      });
     }
   };
 
   return (
     <PageWrapper>
       <Container>
-        <h2>S'inscrire</h2>
+        <h2>Create Account</h2>
+
         <Input
           type="text"
-          placeholder="Nom d'utilisateur"
+          placeholder="Username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(event) => setUsername(event.target.value)}
         />
         {errors.username && <ErrorText>{errors.username}</ErrorText>}
+
         <Input
           type="password"
-          placeholder="Mot de passe"
+          placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(event) => setPassword(event.target.value)}
         />
         {errors.password && <ErrorText>{errors.password}</ErrorText>}
+
         {errors.general && <ErrorText>{errors.general}</ErrorText>}
-        <Button onClick={handleSubmit}>S'inscrire</Button>
+
+        <Button onClick={handleSubmit}>Sign Up</Button>
+
+        <LoginText>
+          Already have an account? <Link to="/login">Log in</Link>
+        </LoginText>
       </Container>
     </PageWrapper>
   );
