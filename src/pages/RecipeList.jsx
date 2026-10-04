@@ -1,7 +1,7 @@
 // RecipeList.jsx
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../components/authContext.jsx';
+import { AuthContext } from '../components/AuthContext.js';
 import styled from 'styled-components';
 import api from '../api';
 import { toast } from 'react-toastify';

@@ -3,7 +3,7 @@
 import { useContext } from 'react'; // Importing React and useContext from React
 import { Link, useNavigate } from 'react-router-dom'; // Importing Link and useNavigate from react-router-dom
 import styled from 'styled-components'; // Importing styled-components for styling
-import { AuthContext } from './authContext.jsx'; // Importing AuthContext for authentication state management
+import { AuthContext } from './AuthContext.js'; // Importing AuthContext for authentication state management
 
 // Styled components for the navigation bar
 // Using CSS inside javascript to style the navigation bar
@@ -58,7 +58,7 @@ const Navbar = () => {
                 {user && (
                     <>
                       <Link to="/recipes">Recettes</Link>
-                      <Link to="/add-recipe">Ajouter recettes</Link>
+                      <Link to="/add">Ajouter recettes</Link>
                       <Button color="red" onClick={handleLogout}>Se déconnecter</Button>
                     </>
                 )}

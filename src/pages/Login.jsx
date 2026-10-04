@@ -1,7 +1,7 @@
 // Login.jsx
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../components/authContext.jsx';
+import { AuthContext } from '../components/AuthContext.js';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
